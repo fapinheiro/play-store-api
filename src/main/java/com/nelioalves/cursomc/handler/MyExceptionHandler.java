@@ -1,5 +1,6 @@
 package com.nelioalves.cursomc.handler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import com.nelioalves.cursomc.exception.NotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,17 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
 		LOG.error(ERROR_MESSAGE, ex);
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), "error occurred");
+		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+	}
+
+	/**
+	 * This exception is thrown when constraint validation
+	 */
+	@ExceptionHandler(value = { DataIntegrityViolationException.class })
+	protected ResponseEntity<Object> handleConstraint(RuntimeException ex, WebRequest request) {
+		LOG.error(ERROR_MESSAGE, ex);
+		List<String> errors = new ArrayList<String>();
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Constraint violation", errors);
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
