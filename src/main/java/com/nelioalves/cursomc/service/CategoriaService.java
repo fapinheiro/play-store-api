@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.nelioalves.cursomc.domain.Categoria;
+import com.nelioalves.cursomc.dto.CategoriaDTO;
 import com.nelioalves.cursomc.exception.NotFoundException;
 import com.nelioalves.cursomc.repository.CategoriaRepository;
 
@@ -40,12 +41,17 @@ public class CategoriaService {
     }
 
     public Categoria update(Categoria cat) {
-        this.findById(cat.getId());
-        return repo.save(cat);
+        Categoria newObj = this.findById(cat.getId());
+        newObj.setNome(cat.getNome());
+        return repo.save(newObj);
     }
 
     public void delete(Integer id) {
         this.findById(id);
         repo.deleteById(id);
+    }
+
+    public Categoria fromDTO(CategoriaDTO dto) {
+        return new Categoria(dto.getId(), dto.getNome());
     }
 }

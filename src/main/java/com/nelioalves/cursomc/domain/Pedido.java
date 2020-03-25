@@ -106,6 +106,12 @@ public class Pedido implements Serializable {
 		this.itens = itens;
 	}
 
+	public double getValorTotal() {
+		return itens.stream()
+			.mapToDouble( item -> item.getSubTotal() )
+			.sum();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

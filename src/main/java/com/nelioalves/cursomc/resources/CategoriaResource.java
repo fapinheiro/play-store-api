@@ -16,6 +16,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import com.nelioalves.cursomc.domain.Categoria;
 import com.nelioalves.cursomc.dto.CategoriaDTO;
 import com.nelioalves.cursomc.service.CategoriaService;
@@ -43,7 +45,8 @@ public class CategoriaResource {
 	}
 
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> add(@RequestBody Categoria cat) {
+	public ResponseEntity<Void> add(@Valid @RequestBody CategoriaDTO dto) {
+		Categoria cat = service.fromDTO(dto);
 		cat = service.add(cat);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 			.path("/{id}")
@@ -53,7 +56,8 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(value ="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody Categoria cat) {
+	public ResponseEntity<Void> update(@PathVariable Integer id, @Valid @RequestBody CategoriaDTO dto) {
+		Categoria cat = service.fromDTO(dto);
 		cat.setId(id);
 		cat = service.update(cat);
 		return ResponseEntity.noContent().build();

@@ -3,8 +3,9 @@ package com.nelioalves.cursomc.enums;
 import java.util.stream.Stream;
 
 public enum TipoCliente {
-    PESSOAFISICA(1, "Pessoa Fisica"),
-    PESSOAJURIDICA(2,"Pessoa Juridica");
+
+    PESSOA_FISICA(1, "Pessoa Fisica"),
+    PESSOA_JURIDICA(2,"Pessoa Juridica");
 
     private Integer cod;
     private String desc;

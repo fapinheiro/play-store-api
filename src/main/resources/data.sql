@@ -4,9 +4,13 @@ insert into categoria (nome) values ('Perfumaria');
 insert into categoria (nome) values ('Higiene');
 insert into categoria (nome) values ('Casa & Conforto');
 
-insert into produto (nome, preco) values ('computador', 2000);
-insert into produto (nome, preco) values ('impressora', 800);
-insert into produto (nome, preco) values ('mouse', 80);
+insert into produto (nome, preco) values ('Computador', 2000);
+insert into produto (nome, preco) values ('Impressora', 800);
+insert into produto (nome, preco) values ('Mesa escritorio', 300);
+insert into produto (nome, preco) values ('Toalha', 20);
+insert into produto (nome, preco) values ('Colcha', 30);
+insert into produto (nome, preco) values ('TV true color', 1200);
+insert into produto (nome, preco) values ('Shampoo', 7.5);
 
 insert into produto_categoria (id_produto, id_categoria) values (1,1);
 insert into produto_categoria (id_produto, id_categoria) values (2,1);
@@ -20,8 +24,13 @@ insert into cidade(nome, id_estado) values ('Belo Horizonte', 1);
 insert into cidade(nome, id_estado) values ('Cotia', 2);
 insert into cidade(nome, id_estado) values ('Campinas', 2);
 
-insert into cliente(nome, email, cpf_ou_cnpj, tipo) 
-values ('32610948859', 'filipe@gmail.com', 'filipe pinheiro', 1);
+insert into cliente(nome, email, senha, cpf_ou_cnpj, tipo) 
+values ('barbara consan', 'barbara@gmail.com', '$2a$10$wB0XIhjN9IvPh9cNWNHSHeGv67rbLizId7Lz4lcSjzIJoOQgjnC4a', '09139875894' , 1);
+insert into cliente(nome, email, senha, cpf_ou_cnpj, tipo) 
+values ('filipe pinheiro', 'filipe@gmail.com', '$2a$10$wB0XIhjN9IvPh9cNWNHSHeGv67rbLizId7Lz4lcSjzIJoOQgjnC4a', '32610948859' , 1);
+
+insert into perfis (id_cliente, id_perfil) values (1,1);
+insert into perfis (id_cliente, id_perfil) values (2,2);
 
 insert into endereco(logradouro, numero, complemento, bairro, 
 cep, id_cliente, id_cidade) 

@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nelioalves.cursomc.enums.Perfil;
 import com.nelioalves.cursomc.enums.TipoCliente;
 
 
@@ -35,11 +38,17 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+
+	@Column(unique=true)
 	private String email;
+
+	@JsonIgnore
+	private String senha;
+
 	private String cpfOuCnpj;
 	private Integer tipo;
     
-	@OneToMany(mappedBy="cliente")
+	@OneToMany(mappedBy="cliente", cascade=CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 	
 	@JsonIgnore
@@ -53,7 +62,15 @@ public class Cliente implements Serializable {
     @Column(name = "telefone_completo")
 	private Set<String> telefones = new HashSet<>();
 	
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(
+		name="perfis",
+		joinColumns = @JoinColumn(name = "id_cliente"))
+	@Column(name = "id_perfil")
+	private Set<Integer> perfis = new HashSet<>();
+
 	public Cliente() {
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
@@ -62,9 +79,31 @@ public class Cliente implements Serializable {
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
-		this.tipo = tipo.getCodigo();
+		this.tipo = (tipo == null) ? null : tipo.getCodigo();
+		addPerfil(Perfil.CLIENTE);
 	}
 
+	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.cpfOuCnpj = cpfOuCnpj;
+		this.tipo = (tipo==null) ? null : tipo.getCodigo();
+		this.senha = senha;
+		addPerfil(Perfil.CLIENTE);
+	}
+
+	public Set<Perfil> getPerfis() {
+		return perfis.stream()
+			.map(x -> Perfil.toEnum(x))
+			.collect(Collectors.toSet());
+	}
+
+	public void addPerfil(Perfil perfil) {
+		perfis.add(perfil.getCodigo());
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -87,6 +126,14 @@ public class Cliente implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return this.senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getCpfOuCnpj() {
