@@ -8,10 +8,13 @@ import com.nelioalves.cursomc.domain.Cliente;
 import com.nelioalves.cursomc.domain.Endereco;
 import com.nelioalves.cursomc.dto.ClienteDTO;
 import com.nelioalves.cursomc.dto.ClienteNewDTO;
+import com.nelioalves.cursomc.enums.Perfil;
 import com.nelioalves.cursomc.enums.TipoCliente;
+import com.nelioalves.cursomc.exception.AuthorizationException;
 import com.nelioalves.cursomc.exception.NotFoundException;
 import com.nelioalves.cursomc.repository.ClienteRepository;
 import com.nelioalves.cursomc.repository.EnderecoRepository;
+import com.nelioalves.cursomc.security.UserSS;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,10 @@ public class ClienteService {
     private BCryptPasswordEncoder pe;
     
     public Cliente findById(Integer id) {
+        UserSS user = UserService.authenticated();
+		if (user==null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
         Optional<Cliente> cat = repo.findById(id);
         return cat.orElseThrow(() -> 
             new NotFoundException(String.format("Objeto nao encontrado id {%d}", id)));

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.nelioalves.cursomc.exception.AuthorizationException;
 import com.nelioalves.cursomc.exception.NotFoundException;
 
 import org.slf4j.Logger;
@@ -49,6 +52,13 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<ApiError> authorization(AuthorizationException e, HttpServletRequest request) {
+		List<String> errors = new ArrayList<String>();
+		ApiError err = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), errors);
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+	}
+	
 	/**
 	 * This exception is thrown when argument annotated with @Valid failed
 	 */
