@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.nelioalves.cursomc.exception.AuthorizationException;
+import com.nelioalves.cursomc.exception.FileException;
 import com.nelioalves.cursomc.exception.NotFoundException;
 
 import org.slf4j.Logger;
@@ -34,10 +35,15 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * This exception is thrown when data not found
 	 */
-	@ExceptionHandler({ NotFoundException.class })
+	@ExceptionHandler({ NotFoundException.class, FileException.class })
 	public ResponseEntity<Object> handleNotFound(Exception ex, WebRequest request) {
 		LOG.error(ERROR_MESSAGE, ex);
-		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), "error occurred");
+		ApiError apiError = null;
+		if (ex instanceof FileException) {
+			apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage(), "error occurred");
+		} else {
+			apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage(), "error occurred");
+		}
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
